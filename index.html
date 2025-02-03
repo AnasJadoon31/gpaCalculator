@@ -1,368 +1,469 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/WebApplication">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GPA Calculator</title>
+    <title>Smart GPA Calculator | Accurate Grade Point Average Tool</title>
+    <meta
+      name="description"
+      content="Advanced GPA calculator with real-time updates, course management, and detailed academic tracking. Perfect for students and educators."
+    />
+    <meta
+      name="keywords"
+      content="GPA calculator, grade tracker, academic planner, semester GPA, cumulative GPA, college GPA"
+    />
+    <meta name="author" content="Your Name" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Smart GPA Calculator | Professional Academic Tool"
+    />
+    <meta
+      property="og:description"
+      content="Calculate and manage your GPA with advanced features including course editing, real-time updates, and detailed academic tracking."
+    />
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/images/gpa-calculator-og.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Professional GPA Calculator Tool" />
+    <meta
+      name="twitter:description"
+      content="Advanced GPA calculator with course management and real-time tracking. Perfect for academic success."
+    />
+    <meta
+      name="twitter:image"
+      content="https://yourdomain.com/images/gpa-calculator-twitter.jpg"
+    />
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Smart GPA Calculator",
+        "description": "Advanced tool for calculating and managing Grade Point Average (GPA)",
+        "applicationCategory": "Educational",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+
     <style>
+      :root {
+        --primary: #ffd700;
+        --secondary: #4a90e2;
+        --background: #0a0a0a;
+        --surface: #1a1a1a;
+        --text: #f5f5f5;
+        --error: #e74c3c;
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: cursive;
+        font-family: "Poppins", sans-serif;
       }
-      #title {
-        color: bisque;
-        font-size: 48px;
-        text-shadow: 0 0 30px rgb(229, 234, 208);
-        text-decoration: underline;
+
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+      body {
+        background: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      header {
+        padding: 2rem 1rem;
         text-align: center;
+        background: linear-gradient(135deg, var(--surface), var(--background));
       }
-      html {
-        background-color: black;
+
+      #title {
+        font-size: 2.5rem;
+        background: linear-gradient(45deg, var(--primary), #ffec80);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
       }
-      form {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding-top: 100px;
-        width: 400px;
+
+      main {
+        max-width: 800px;
         margin: 0 auto;
+        padding: 2rem;
       }
+
+      .calculator-container {
+        background: var(--surface);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+      }
+
       .form-group {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        width: 100%;
+        margin: 1.5rem 0;
+        position: relative;
       }
+
       label {
-        color: bisque;
-        width: 120px;
-        text-align: left;
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+        font-weight: 500;
       }
+
       input,
       select {
-        color: black;
-        border-radius: 5px;
-        padding: 10px;
-        width: 250px;
-        margin-left: 10px;
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--text);
+        font-size: 1rem;
+        transition: all 0.3s ease;
       }
+
+      input:focus,
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        outline: none;
+      }
+
       #addCourses {
-        margin-right: 20px;
-        margin-left: auto;
-        margin-top: 10px;
-        padding: 10px 25px;
-        border-radius: 10px;
-        background-color: transparent;
-        color: bisque;
-        border: 1px solid bisque;
+        background: linear-gradient(135deg, var(--primary), #ffcc00);
+        color: #000;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
         cursor: pointer;
+        width: 100%;
+        margin-top: 1rem;
+        transition: transform 0.3s ease;
       }
+
       #addCourses:hover {
-        background-color: bisque;
-        color: black;
+        transform: scale(1.02);
       }
-      /* Responsive Table Styling */
-      table {
+
+      .course-table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 30px;
+        margin: 2rem 0;
+        background: var(--surface);
+        border-radius: 15px;
+        overflow: hidden;
       }
-      th,
-      td {
-        color: bisque;
-        padding: 15px;
+
+      .course-table th,
+      .course-table td {
+        padding: 1.2rem;
         text-align: center;
-        border: 3px solid bisque;
-        word-wrap: break-word;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-      .actionButton {
-        margin-top: 10px;
-        padding: 10px 25px;
-        border-radius: 10px;
-        background-color: transparent;
-        color: bisque;
-        border: 1px solid bisque;
+
+      .course-table th {
+        background: linear-gradient(135deg, var(--primary), #ffcc00);
+        color: #000;
+        font-weight: 600;
+      }
+
+      .action-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 0.3rem;
+      }
+
+      .action-button:hover {
+        background: var(--primary);
+        color: #000;
+      }
+
+      #gpa-display {
+        font-size: 2rem;
+        text-align: center;
+        margin: 2rem 0;
+        background: linear-gradient(45deg, var(--primary), #fff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .error-message {
+        color: var(--error);
+        text-align: center;
+        margin: 1rem 0;
+        display: none;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.2); /* Increased border contrast */
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.7); /* Darker background */
+        color: rgba(245, 245, 245, 0.9); /* Slightly brighter text */
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        -webkit-appearance: none; /* Remove default styling */
+        -moz-appearance: none;
+        appearance: none;
         cursor: pointer;
       }
-      .actionButton:hover {
-        background-color: bisque;
-        color: black;
+
+      /* Custom dropdown arrow */
+      select {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffd700'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
       }
-      .actionButton:not(:last-child) {
-        margin-right: 10px; /* Adjust the value as needed */
+
+      /* Dropdown options styling */
+      select option {
+        background: #2a2a2a;
+        color: var(--text);
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-      #totalGPA {
-        width: 100%; /* Make it span the full width of its parent */
-        text-align: left; /* Align text to the left */
-        margin: 0; /* Remove any default margin */
-        padding-left: 20px; /* Optional: add left padding for spacing from the edge */
+
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        background: rgba(0, 0, 0, 0.8); /* Darker background when focused */
       }
-      #GPA {
-        color: bisque;
-        text-align: left;
-        margin-left: 0; /* Ensures it aligns to the left */
-      }
-      @media screen and (max-width: 480px) {
-        th,
-        td {
-          padding: 10px;
-          font-size: 14px;
+      @media (max-width: 768px) {
+        main {
+          padding: 1rem;
         }
-        form {
-          width: 90%;
+
+        #title {
+          font-size: 2rem;
         }
-        label {
-          width: 100px;
+
+        .calculator-container {
+          padding: 1.5rem;
         }
-        input,
-        select {
-          width: calc(100% - 110px);
+
+        .course-table th,
+        .course-table td {
+          padding: 0.8rem;
+          font-size: 0.9rem;
         }
       }
     </style>
   </head>
   <body>
     <header>
-      <h1 id="title">GPA Calculator</h1>
+      <h1 id="title">Smart GPA Calculator</h1>
     </header>
+
     <main>
-      <form id="courseInfo">
-        <div class="form-group">
-          <label for="course">Course Name:</label>
-          <input type="text" id="course" name="course" required />
+      <div class="calculator-container">
+        <form id="courseForm">
+          <div class="form-group">
+            <label for="courseName">Course Name</label>
+            <input type="text" id="courseName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="creditHours">Credit Hours</label>
+            <select id="creditHours" required>
+              <option value="4">4 Credits</option>
+              <option value="3" selected>3 Credits</option>
+              <option value="2">2 Credits</option>
+              <option value="1">1 Credit</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="grade">Grade</label>
+            <select id="grade" required>
+              <option value="4.0">A (4.0)</option>
+              <option value="3.7">A- (3.7)</option>
+              <option value="3.3">B+ (3.3)</option>
+              <option value="3.0">B (3.0)</option>
+              <option value="2.7">B- (2.7)</option>
+              <option value="2.3">C+ (2.3)</option>
+              <option value="2.0">C (2.0)</option>
+              <option value="0">F (0.0)</option>
+            </select>
+          </div>
+
+          <button type="button" id="addCourses">Add Course</button>
+          <div class="error-message" id="errorMessage"></div>
+        </form>
+
+        <table class="course-table" aria-label="Course List">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Credits</th>
+              <th>Grade</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="courseList">
+            <!-- Courses will be dynamically added here -->
+          </tbody>
+        </table>
+
+        <div id="gpa-display" aria-live="polite">
+          Cumulative GPA: <span id="gpaValue">0.00</span>
         </div>
-        <div class="form-group">
-          <label for="creditHours">Credit Hours:</label>
-          <select name="creditHours" id="creditHours">
-            <option value="4">4</option>
-            <option value="3" selected>3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
-            <option value="0">0</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="grade">Grade:</label>
-          <select name="grade" id="grade">
-            <option value="4.0">A (4.0)</option>
-            <option value="3.7">A- (3.7)</option>
-            <option value="3.3">B+ (3.3)</option>
-            <option value="3.0">B (3.0)</option>
-            <option value="2.7">B- (2.7)</option>
-            <option value="2.3">C+ (2.3)</option>
-            <option value="2.0">C (2.0)</option>
-            <option value="0">F (0)</option>
-          </select>
-        </div>
-        <button type="button" id="addCourses" onclick="onSubmit()">Add</button>
-        <div id="totalGPA"></div>
-      </form>
-      <div id="tableContainer"></div>
+      </div>
     </main>
-    <footer></footer>
+
+    <footer>
+      <p>© Muhammad Anas. All rights reserved.</p>
+    </footer>
+
     <script>
-      // Global variables
-      var tableGenerated = false;
-      var editingRow = null;
-      var grandTotalPoints = 0;
-      var totalCreditHours = 0;
-      var totalGPA = 0;
-      if (totalGPA === Infinity || totalGPA === NaN || totalGPA === -Infinity) {
-        totalGPA = 0;
-      }
-      // Remove the entire table row when Remove is clicked.
-      function removeElement() {
-        var row = this.parentElement.parentElement;
-        // Retrieve credit hours and grade as numbers from the row.
-        var creditHours = parseFloat(row.cells[1].textContent);
-        var grade = parseFloat(row.cells[2].textContent);
-
-        // Update global totals.
-        grandTotalPoints = grandTotalPoints - creditHours * grade;
-        totalCreditHours = totalCreditHours - creditHours;
-        totalGPA = grandTotalPoints / totalCreditHours;
-
-        // Remove existing GPA display if any.
-        if (document.getElementById("GPA")) {
-          document.getElementById("GPA").remove();
+      class GPACalculator {
+        constructor() {
+          this.courses = [];
+          this.currentEditIndex = -1;
+          this.initialize();
         }
 
-        // Use isNaN() to check if totalGPA is NaN, and also check for Infinity values.
-        if (
-          totalGPA === Infinity ||
-          isNaN(totalGPA) ||
-          totalGPA === -Infinity
-        ) {
-          totalGPA = 0;
+        initialize() {
+          document
+            .getElementById("addCourses")
+            .addEventListener("click", () => this.handleSubmit());
+          this.render();
         }
 
-        // Create and display the updated GPA.
-        var GPA = document.createElement("h3");
-        GPA.id = "GPA";
-        GPA.innerHTML = "Total GPA: " + totalGPA;
-        document.getElementById("totalGPA").after(GPA);
+        handleSubmit() {
+          const courseName = document.getElementById("courseName").value.trim();
+          const creditHours = parseFloat(
+            document.getElementById("creditHours").value
+          );
+          const grade = parseFloat(document.getElementById("grade").value);
 
-        // Finally, remove the row.
-        row.remove();
-      }
+          if (!this.validateInput(courseName, creditHours, grade)) return;
 
-      // Called when the Edit button is clicked.
-      function editElement() {
-        // Get the row containing the clicked button.
-        var row = this.parentElement.parentElement;
-        // Log the row index (for debugging).
-        console.log("Editing row index:", row.rowIndex);
+          if (this.currentEditIndex > -1) {
+            this.updateCourse(this.currentEditIndex, {
+              courseName,
+              creditHours,
+              grade,
+            });
+            this.currentEditIndex = -1;
+          } else {
+            this.addCourse({ courseName, creditHours, grade });
+          }
 
-        // Retrieve current row values.
-        var course = row.cells[0].textContent;
-        var creditHours = row.cells[1].textContent;
-        var grade = row.cells[2].textContent;
-
-        // Populate the form fields.
-        document.getElementById("course").value = course;
-        document.getElementById("creditHours").value = creditHours;
-
-        // Correctly set the grade in the dropdown
-        var gradeSelect = document.getElementById("grade");
-        gradeSelect.value = grade; // Ensure grade is a string matching the option's value
-
-        // Set the global editingRow variable.
-        editingRow = row;
-        // Change the Add button to Update.
-        document.getElementById("addCourses").textContent = "Update";
-      }
-
-      // Called when the Add/Update button is clicked.
-      function onSubmit() {
-        var form = document.getElementById("courseInfo");
-        var formData = new FormData(form);
-        var course = formData.get("course");
-        var creditHours = formData.get("creditHours");
-        var grade = formData.get("grade");
-
-        // Remove existing warning if any.
-        if (document.getElementById("warning")) {
-          document.getElementById("warning").remove();
+          this.resetForm();
+          this.render();
         }
 
-        // Validate form fields.
-        if (!course || !creditHours || !grade) {
-          var warning = document.createElement("h3");
-          warning.innerHTML = "Please fill all the fields!";
-          warning.style.color = "red";
-          warning.style.marginTop = "20px";
-          warning.id = "warning";
-          document.getElementById("addCourses").after(warning);
-          return;
+        validateInput(courseName, creditHours, grade) {
+          const errorElement = document.getElementById("errorMessage");
+
+          if (!courseName || isNaN(creditHours) || isNaN(grade)) {
+            this.showError("Please fill all fields correctly!");
+            return false;
+          }
+
+          errorElement.style.display = "none";
+          return true;
         }
 
-        // Convert numeric values.
-        creditHours = parseFloat(creditHours);
-        grade = parseFloat(grade);
-
-        // If editing, update the row.
-        if (editingRow) {
-          editingRow.cells[0].textContent = course;
-          editingRow.cells[1].textContent = creditHours;
-          editingRow.cells[2].textContent = grade;
-          editingRow.cells[3].textContent = (creditHours * grade).toFixed(2);
-          form.reset();
-          editingRow = null;
-          document.getElementById("addCourses").textContent = "Add";
-          return;
+        showError(message) {
+          const errorElement = document.getElementById("errorMessage");
+          errorElement.textContent = message;
+          errorElement.style.display = "block";
+          setTimeout(() => (errorElement.style.display = "none"), 3000);
         }
 
-        // Create table if it doesn't exist.
-        if (!tableGenerated) {
-          var table = document.createElement("table");
-          var theader = document.createElement("tr");
+        addCourse(course) {
+          this.courses.push(course);
+        }
 
-          var heading1 = document.createElement("th");
-          var heading2 = document.createElement("th");
-          var heading3 = document.createElement("th");
-          var heading4 = document.createElement("th");
-          var heading5 = document.createElement("th");
+        updateCourse(index, newCourse) {
+          this.courses[index] = newCourse;
+        }
 
-          heading1.innerHTML = "Course Name";
-          heading2.innerHTML = "Credit Hours";
-          heading3.innerHTML = "Grade";
-          heading4.innerHTML = "Total Grade Points";
-          heading5.innerHTML = "Action";
+        removeCourse(index) {
+          this.courses.splice(index, 1);
+          this.render();
+        }
 
-          // Optional styling for headings.
-          [heading1, heading2, heading3, heading4, heading5].forEach(function (
-            h
-          ) {
-            h.style.textShadow = "0 0 30px rgb(229, 234, 208)";
-            h.style.textDecorationLine = "underline";
+        calculateGPA() {
+          if (this.courses.length === 0) return 0.0;
+
+          const total = this.courses.reduce((acc, course) => {
+            return acc + course.creditHours * course.grade;
+          }, 0);
+
+          const totalCredits = this.courses.reduce(
+            (acc, course) => acc + course.creditHours,
+            0
+          );
+
+          return totalCredits > 0 ? (total / totalCredits).toFixed(2) : 0.0;
+        }
+
+        render() {
+          const tbody = document.getElementById("courseList");
+          tbody.innerHTML = "";
+
+          this.courses.forEach((course, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>${course.courseName}</td>
+                        <td>${course.creditHours}</td>
+                        <td>${course.grade.toFixed(1)}</td>
+                        <td>
+                            <button class="action-button" onclick="gpacalculator.editCourse(${index})">✏️ Edit</button>
+                            <button class="action-button" onclick="gpacalculator.removeCourse(${index})">🗑️ Remove</button>
+                        </td>
+                    `;
+            tbody.appendChild(row);
           });
 
-          theader.appendChild(heading1);
-          theader.appendChild(heading2);
-          theader.appendChild(heading3);
-          theader.appendChild(heading4);
-          theader.appendChild(heading5);
-
-          table.appendChild(theader);
-          table.id = "userTable";
-
-          // Insert table after the Add/Update button.
-          document.getElementById("tableContainer").append(table);
-          tableGenerated = true;
+          document.getElementById("gpaValue").textContent = this.calculateGPA();
         }
 
-        // Add a new row to the table.
-        var table = document.getElementById("userTable");
-        // Insert new row at index 1 (below header).
-        var row = table.insertRow(1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        var cell4 = row.insertCell(3);
-        var cell5 = row.insertCell(4);
-
-        // Create Remove button.
-        var removeButton = document.createElement("button");
-        removeButton.innerHTML = "Remove";
-        removeButton.onclick = removeElement;
-        removeButton.className = "actionButton";
-        cell5.appendChild(removeButton);
-
-        // Create Edit button.
-        var editButton = document.createElement("button");
-        editButton.innerHTML = "Edit";
-        editButton.onclick = editElement;
-        editButton.className = "actionButton";
-        cell5.appendChild(editButton);
-
-        // Calculate total grade points.
-        var totalPoints = creditHours * grade;
-
-        cell1.innerHTML = course;
-        cell2.innerHTML = creditHours;
-        cell3.innerHTML = grade;
-        cell4.innerHTML = totalPoints;
-        grandTotalPoints = grandTotalPoints + totalPoints;
-        totalCreditHours = totalCreditHours + creditHours;
-        totalGPA = grandTotalPoints / totalCreditHours;
-
-        console.log("Grand Total Points", grandTotalPoints);
-        console.log("Total Credit Hours", totalCreditHours);
-        console.log("Total GPA", totalGPA);
-
-        if (document.getElementById("GPA")) {
-          document.getElementById("GPA").remove();
+        editCourse(index) {
+          const course = this.courses[index];
+          document.getElementById("courseName").value = course.courseName;
+          document.getElementById("creditHours").value = course.creditHours;
+          document.getElementById("grade").value = course.grade;
+          this.currentEditIndex = index;
+          document.getElementById("addCourses").textContent = "Update Course";
         }
 
-        var GPA = document.createElement("h3");
-        GPA.id = "GPA";
-        GPA.innerHTML = "Total GPA: " + totalGPA;
-        document.getElementById("totalGPA").after(GPA);
-        // Reset form.
-        form.reset();
+        resetForm() {
+          document.getElementById("courseForm").reset();
+          document.getElementById("addCourses").textContent = "Add Course";
+        }
       }
+
+      // Initialize calculator
+      const gpacalculator = new GPACalculator();
     </script>
   </body>
 </html>
