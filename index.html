@@ -3,26 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smart GPA Calculator | Accurate Grade Point Average Tool</title>
+    <title>Advanced GPA Calculator | Professional Academic Tool</title>
     <meta
       name="description"
-      content="Advanced GPA calculator with real-time updates, course management, and detailed academic tracking. Perfect for students and educators."
+      content="Comprehensive GPA calculator with PDF export, course management, and real-time tracking. Perfect for academic success."
     />
     <meta
       name="keywords"
-      content="GPA calculator, grade tracker, academic planner, semester GPA, cumulative GPA, college GPA"
+      content="GPA calculator, grade tracker, academic planner, PDF report, semester GPA"
     />
-    <meta name="author" content="Your Name" />
+    <meta name="author" content="Muhammad Anas" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="Smart GPA Calculator | Professional Academic Tool"
+      content="Professional GPA Calculator with PDF Export"
     />
     <meta
       property="og:description"
-      content="Calculate and manage your GPA with advanced features including course editing, real-time updates, and detailed academic tracking."
+      content="Advanced GPA calculator with course management and PDF report generation. Track your academic progress effortlessly."
     />
     <meta
       property="og:image"
@@ -31,10 +31,13 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Professional GPA Calculator Tool" />
+    <meta
+      name="twitter:title"
+      content="Smart GPA Calculator with PDF Reports"
+    />
     <meta
       name="twitter:description"
-      content="Advanced GPA calculator with course management and real-time tracking. Perfect for academic success."
+      content="Calculate, track, and export your GPA with professional PDF reports. Essential tool for students and educators."
     />
     <meta
       name="twitter:image"
@@ -46,8 +49,8 @@
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Smart GPA Calculator",
-        "description": "Advanced tool for calculating and managing Grade Point Average (GPA)",
+        "name": "Advanced GPA Calculator",
+        "description": "Professional tool for GPA calculation and academic tracking",
         "applicationCategory": "Educational",
         "operatingSystem": "Any",
         "offers": {
@@ -87,6 +90,7 @@
         padding: 2rem 1rem;
         text-align: center;
         background: linear-gradient(135deg, var(--surface), var(--background));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       #title {
@@ -126,19 +130,33 @@
       select {
         width: 100%;
         padding: 1rem;
-        border: 2px solid rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
         border-radius: 8px;
-        background: rgba(0, 0, 0, 0.3);
-        color: var(--text);
+        background: rgba(0, 0, 0, 0.7);
+        color: rgba(245, 245, 245, 0.9);
         font-size: 1rem;
         transition: all 0.3s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffd700'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+      }
+
+      select option {
+        background: #2a2a2a;
+        color: var(--text);
+        padding: 1rem;
       }
 
       input:focus,
       select:focus {
         border-color: var(--primary);
         box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-        outline: none;
+        background: rgba(0, 0, 0, 0.8);
       }
 
       #addCourses {
@@ -212,48 +230,31 @@
         display: none;
       }
 
+      #downloadPDF {
+        background: linear-gradient(135deg, var(--primary), #ffcc00);
+        color: #000;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: transform 0.3s ease;
+        border: none;
+        cursor: pointer;
+        margin: 20px auto;
+        display: block;
+      }
+
+      #downloadPDF:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+      }
+
       footer {
         text-align: center;
         padding: 2rem;
         margin-top: 3rem;
         color: rgba(255, 255, 255, 0.7);
       }
-      select {
-        width: 100%;
-        padding: 1rem;
-        border: 2px solid rgba(255, 255, 255, 0.2); /* Increased border contrast */
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.7); /* Darker background */
-        color: rgba(245, 245, 245, 0.9); /* Slightly brighter text */
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        -webkit-appearance: none; /* Remove default styling */
-        -moz-appearance: none;
-        appearance: none;
-        cursor: pointer;
-      }
 
-      /* Custom dropdown arrow */
-      select {
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffd700'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1.2rem;
-      }
-
-      /* Dropdown options styling */
-      select option {
-        background: #2a2a2a;
-        color: var(--text);
-        padding: 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      select:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-        background: rgba(0, 0, 0, 0.8); /* Darker background when focused */
-      }
       @media (max-width: 768px) {
         main {
           padding: 1rem;
@@ -274,6 +275,8 @@
         }
       }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   </head>
   <body>
     <header>
@@ -333,6 +336,8 @@
         <div id="gpa-display" aria-live="polite">
           Cumulative GPA: <span id="gpaValue">0.00</span>
         </div>
+
+        <button id="downloadPDF">Download PDF Report</button>
       </div>
     </main>
 
@@ -352,6 +357,9 @@
           document
             .getElementById("addCourses")
             .addEventListener("click", () => this.handleSubmit());
+          document
+            .getElementById("downloadPDF")
+            .addEventListener("click", () => this.generatePDF());
           this.render();
         }
 
@@ -424,6 +432,62 @@
           );
 
           return totalCredits > 0 ? (total / totalCredits).toFixed(2) : 0.0;
+        }
+
+        generatePDF() {
+          if (this.courses.length === 0) {
+            this.showError("No courses to export!");
+            return;
+          }
+
+          const doc = new jspdf.jsPDF();
+          const date = new Date().toLocaleDateString();
+
+          // Header
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(22);
+          doc.setTextColor(255, 215, 0);
+          doc.text("GPA Report", 15, 20);
+
+          doc.setFontSize(12);
+          doc.setTextColor(150, 150, 150);
+          doc.text(`Generated on: ${date}`, 15, 28);
+
+          // Table data
+          const tableData = this.courses.map((course) => [
+            course.courseName,
+            course.creditHours,
+            course.grade.toFixed(1),
+            (course.creditHours * course.grade).toFixed(1),
+          ]);
+
+          // Create table
+          doc.autoTable({
+            head: [["Course", "Credits", "Grade", "Points"]],
+            body: tableData,
+            startY: 35,
+            theme: "grid",
+            styles: {
+              textColor: [50, 50, 50],
+              fontSize: 10,
+            },
+            headStyles: {
+              fillColor: [40, 40, 40],
+              textColor: [255, 215, 0],
+            },
+          });
+
+          // Add GPA
+          doc.setFontSize(14);
+          doc.setTextColor(255, 215, 0);
+          doc.text(
+            `Total GPA: ${this.calculateGPA()}`,
+            15,
+            doc.lastAutoTable.finalY + 15
+          );
+
+          // Save PDF
+          doc.save(`gpa-report-${date}.pdf`);
         }
 
         render() {
