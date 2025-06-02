@@ -10,7 +10,7 @@
     />
     <meta
       name="keywords"
-      content="GPA calculator, grade tracker, academic planner, PDF report, semester GPA"
+      content="GPA calculator, grade tracker, academic planner, PDF report, semester GPA, CGPA calculator"
     />
     <meta name="author" content="Muhammad Anas" />
 
@@ -159,7 +159,7 @@
         background: rgba(0, 0, 0, 0.8);
       }
 
-      #addCourses {
+      .form-button {
         background: linear-gradient(135deg, var(--primary), #ffcc00);
         color: #000;
         border: none;
@@ -172,7 +172,7 @@
         transition: transform 0.3s ease;
       }
 
-      #addCourses:hover {
+      .form-button:hover {
         transform: scale(1.02);
       }
 
@@ -214,8 +214,8 @@
         color: #000;
       }
 
-      #gpa-display {
-        font-size: 2rem;
+      .gpa-display {
+        font-size: 1.5rem;
         text-align: center;
         margin: 2rem 0;
         background: linear-gradient(45deg, var(--primary), #fff);
@@ -248,6 +248,50 @@
         box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
       }
 
+      .tabs {
+        display: flex;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tab {
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .tab.active {
+        border-bottom: 3px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .previous-semester {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .semester-info {
+        flex-grow: 1;
+      }
+
+      .semester-actions {
+        display: flex;
+      }
+
       footer {
         text-align: center;
         padding: 2rem;
@@ -273,6 +317,20 @@
           padding: 0.8rem;
           font-size: 0.9rem;
         }
+        
+        .tabs {
+          flex-direction: column;
+        }
+        
+        .tab {
+          border-bottom: none;
+          border-left: 3px solid transparent;
+        }
+        
+        .tab.active {
+          border-bottom: none;
+          border-left: 3px solid var(--primary);
+        }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -285,57 +343,96 @@
 
     <main>
       <div class="calculator-container">
-        <form id="courseForm">
-          <div class="form-group">
-            <label for="courseName">Course Name</label>
-            <input type="text" id="courseName" required />
+        <div class="tabs">
+          <div class="tab active" onclick="gpacalculator.switchTab('current')">Current Semester</div>
+          <div class="tab" onclick="gpacalculator.switchTab('previous')">Previous Semesters</div>
+        </div>
+
+        <!-- Current Semester Tab -->
+        <div id="currentSemesterTab" class="tab-content active">
+          <form id="courseForm">
+            <div class="form-group">
+              <label for="courseName">Course Name</label>
+              <input type="text" id="courseName" required />
+            </div>
+
+            <div class="form-group">
+              <label for="creditHours">Credit Hours</label>
+              <select id="creditHours" required>
+                <option value="4">4 Credits</option>
+                <option value="3" selected>3 Credits</option>
+                <option value="2">2 Credits</option>
+                <option value="1">1 Credit</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="grade">Grade</label>
+              <select id="grade" required>
+                <option value="4.0">A (4.0)</option>
+                <option value="3.67">A- (3.67)</option>
+                <option value="3.3">B+ (3.3)</option>
+                <option value="3.0">B (3.0)</option>
+                <option value="2.67">B- (2.67)</option>
+                <option value="2.3">C+ (2.3)</option>
+                <option value="2.0">C (2.0)</option>
+                <option value="1.67">C- (2.0)</option>
+                <option value="0">F (0.0)</option>
+              </select>
+            </div>
+
+            <button type="button" id="addCourses" class="form-button">Add Course</button>
+            <div class="error-message" id="errorMessage"></div>
+          </form>
+
+          <table class="course-table" aria-label="Course List">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Credits</th>
+                <th>Grade</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="courseList">
+              <!-- Courses will be dynamically added here -->
+            </tbody>
+          </table>
+
+          <div class="gpa-display" aria-live="polite">
+            Current Semester GPA: <span id="gpaValue">0.00</span>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="creditHours">Credit Hours</label>
-            <select id="creditHours" required>
-              <option value="4">4 Credits</option>
-              <option value="3" selected>3 Credits</option>
-              <option value="2">2 Credits</option>
-              <option value="1">1 Credit</option>
-            </select>
+        <!-- Previous Semesters Tab -->
+        <div id="previousSemestersTab" class="tab-content">
+          <form id="previousSemesterForm">
+            <div class="form-group">
+              <label for="semesterName">Semester Name</label>
+              <input type="text" id="semesterName" placeholder="e.g., Fall 2024" required />
+            </div>
+
+            <div class="form-group">
+              <label for="semesterGPA">Semester GPA</label>
+              <input type="number" id="semesterGPA" min="0" max="4" step="0.01" placeholder="3.50" required />
+            </div>
+
+            <div class="form-group">
+              <label for="semesterCredits">Total Credits</label>
+              <input type="number" id="semesterCredits" min="1" step="1" placeholder="15" required />
+            </div>
+
+            <button type="button" id="addSemester" class="form-button">Add Semester</button>
+            <div class="error-message" id="semesterErrorMessage"></div>
+          </form>
+
+          <div id="previousSemestersList">
+            <!-- Previous semesters will be dynamically added here -->
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="grade">Grade</label>
-            <select id="grade" required>
-              <option value="4.0">A (4.0)</option>
-              <option value="3.67">A- (3.67)</option>
-              <option value="3.3">B+ (3.3)</option>
-              <option value="3.0">B (3.0)</option>
-              <option value="2.67">B- (2.67)</option>
-              <option value="2.3">C+ (2.3)</option>
-              <option value="2.0">C (2.0)</option>
-              <option value="1.67">C- (2.0)</option>
-              <option value="0">F (0.0)</option>
-            </select>
-          </div>
-
-          <button type="button" id="addCourses">Add Course</button>
-          <div class="error-message" id="errorMessage"></div>
-        </form>
-
-        <table class="course-table" aria-label="Course List">
-          <thead>
-            <tr>
-              <th>Course</th>
-              <th>Credits</th>
-              <th>Grade</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="courseList">
-            <!-- Courses will be dynamically added here -->
-          </tbody>
-        </table>
-
-        <div id="gpa-display" aria-live="polite">
-          Cumulative GPA: <span id="gpaValue">0.00</span>
+        <div class="gpa-display" aria-live="polite">
+          Cumulative GPA (CGPA): <span id="cgpaValue">0.00</span>
         </div>
 
         <button id="downloadPDF">Download PDF Report</button>
@@ -350,7 +447,9 @@
       class GPACalculator {
         constructor() {
           this.courses = [];
+          this.previousSemesters = [];
           this.currentEditIndex = -1;
+          this.currentEditSemesterIndex = -1;
           this.initialize();
         }
 
@@ -359,9 +458,25 @@
             .getElementById("addCourses")
             .addEventListener("click", () => this.handleSubmit());
           document
+            .getElementById("addSemester")
+            .addEventListener("click", () => this.handleSemesterSubmit());
+          document
             .getElementById("downloadPDF")
             .addEventListener("click", () => this.generatePDF());
           this.render();
+        }
+
+        switchTab(tab) {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          
+          if (tab === 'current') {
+            document.querySelector('.tab:nth-child(1)').classList.add('active');
+            document.getElementById('currentSemesterTab').classList.add('active');
+          } else {
+            document.querySelector('.tab:nth-child(2)').classList.add('active');
+            document.getElementById('previousSemestersTab').classList.add('active');
+          }
         }
 
         handleSubmit() {
@@ -388,11 +503,33 @@
           this.render();
         }
 
+        handleSemesterSubmit() {
+          const semesterName = document.getElementById("semesterName").value.trim();
+          const semesterGPA = parseFloat(document.getElementById("semesterGPA").value);
+          const semesterCredits = parseFloat(document.getElementById("semesterCredits").value);
+
+          if (!this.validateSemesterInput(semesterName, semesterGPA, semesterCredits)) return;
+
+          if (this.currentEditSemesterIndex > -1) {
+            this.updateSemester(this.currentEditSemesterIndex, {
+              semesterName,
+              semesterGPA,
+              semesterCredits
+            });
+            this.currentEditSemesterIndex = -1;
+          } else {
+            this.addSemester({ semesterName, semesterGPA, semesterCredits });
+          }
+
+          this.resetSemesterForm();
+          this.render();
+        }
+
         validateInput(courseName, creditHours, grade) {
           const errorElement = document.getElementById("errorMessage");
 
           if (!courseName || isNaN(creditHours) || isNaN(grade)) {
-            this.showError("Please fill all fields correctly!");
+            this.showError("Please fill all fields correctly!", errorElement);
             return false;
           }
 
@@ -400,11 +537,32 @@
           return true;
         }
 
-        showError(message) {
-          const errorElement = document.getElementById("errorMessage");
-          errorElement.textContent = message;
-          errorElement.style.display = "block";
-          setTimeout(() => (errorElement.style.display = "none"), 3000);
+        validateSemesterInput(semesterName, semesterGPA, semesterCredits) {
+          const errorElement = document.getElementById("semesterErrorMessage");
+
+          if (!semesterName || isNaN(semesterGPA) || isNaN(semesterCredits)) {
+            this.showError("Please fill all fields correctly!", errorElement);
+            return false;
+          }
+
+          if (semesterGPA < 0 || semesterGPA > 4) {
+            this.showError("GPA must be between 0 and 4", errorElement);
+            return false;
+          }
+
+          if (semesterCredits <= 0) {
+            this.showError("Credits must be greater than 0", errorElement);
+            return false;
+          }
+
+          errorElement.style.display = "none";
+          return true;
+        }
+
+        showError(message, element) {
+          element.textContent = message;
+          element.style.display = "block";
+          setTimeout(() => (element.style.display = "none"), 3000);
         }
 
         addCourse(course) {
@@ -420,7 +578,20 @@
           this.render();
         }
 
-        calculateGPA() {
+        addSemester(semester) {
+          this.previousSemesters.push(semester);
+        }
+
+        updateSemester(index, newSemester) {
+          this.previousSemesters[index] = newSemester;
+        }
+
+        removeSemester(index) {
+          this.previousSemesters.splice(index, 1);
+          this.render();
+        }
+
+        calculateCurrentGPA() {
           if (this.courses.length === 0) return 0.0;
 
           const total = this.courses.reduce((acc, course) => {
@@ -435,9 +606,34 @@
           return totalCredits > 0 ? (total / totalCredits).toFixed(2) : 0.0;
         }
 
+        calculateCGPA() {
+          // Calculate current semester points and credits
+          const currentGPA = parseFloat(this.calculateCurrentGPA());
+          const currentCredits = this.courses.reduce(
+            (acc, course) => acc + course.creditHours,
+            0
+          );
+          const currentPoints = currentGPA * currentCredits;
+
+          // Calculate previous semesters points and credits
+          const previousPoints = this.previousSemesters.reduce(
+            (acc, semester) => acc + (semester.semesterGPA * semester.semesterCredits),
+            0
+          );
+          const previousCredits = this.previousSemesters.reduce(
+            (acc, semester) => acc + semester.semesterCredits,
+            0
+          );
+
+          const totalPoints = currentPoints + previousPoints;
+          const totalCredits = currentCredits + previousCredits;
+
+          return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 0.0;
+        }
+
         generatePDF() {
-          if (this.courses.length === 0) {
-            this.showError("No courses to export!");
+          if (this.courses.length === 0 && this.previousSemesters.length === 0) {
+            this.showError("No data to export!", document.getElementById("errorMessage"));
             return;
           }
 
@@ -454,37 +650,84 @@
           doc.setTextColor(150, 150, 150);
           doc.text(`Generated on: ${date}`, 15, 28);
 
-          // Table data
-          const tableData = this.courses.map((course) => [
-            course.courseName,
-            course.creditHours,
-            course.grade.toFixed(1),
-            (course.creditHours * course.grade).toFixed(1),
-          ]);
+          let startY = 35;
 
-          // Create table
-          doc.autoTable({
-            head: [["Course", "Credits", "Grade", "Points"]],
-            body: tableData,
-            startY: 35,
-            theme: "grid",
-            styles: {
-              textColor: [50, 50, 50],
-              fontSize: 10,
-            },
-            headStyles: {
-              fillColor: [40, 40, 40],
-              textColor: [255, 215, 0],
-            },
-          });
+          // Current Semester Table
+          if (this.courses.length > 0) {
+            doc.setFontSize(14);
+            doc.setTextColor(255, 215, 0);
+            doc.text("Current Semester Courses", 15, startY);
+            startY += 10;
 
-          // Add GPA
+            const tableData = this.courses.map((course) => [
+              course.courseName,
+              course.creditHours,
+              course.grade.toFixed(1),
+              (course.creditHours * course.grade).toFixed(1),
+            ]);
+
+            doc.autoTable({
+              head: [["Course", "Credits", "Grade", "Points"]],
+              body: tableData,
+              startY: startY,
+              theme: "grid",
+              styles: {
+                textColor: [50, 50, 50],
+                fontSize: 10,
+              },
+              headStyles: {
+                fillColor: [40, 40, 40],
+                textColor: [255, 215, 0],
+              },
+            });
+
+            startY = doc.lastAutoTable.finalY + 10;
+            
+            doc.setFontSize(12);
+            doc.setTextColor(255, 255, 255);
+            doc.text(`Current Semester GPA: ${this.calculateCurrentGPA()}`, 15, startY);
+            startY += 10;
+          }
+
+          // Previous Semesters Table
+          if (this.previousSemesters.length > 0) {
+            doc.setFontSize(14);
+            doc.setTextColor(255, 215, 0);
+            doc.text("Previous Semesters", 15, startY);
+            startY += 10;
+
+            const semesterData = this.previousSemesters.map((semester) => [
+              semester.semesterName,
+              semester.semesterCredits,
+              semester.semesterGPA.toFixed(2),
+              (semester.semesterCredits * semester.semesterGPA).toFixed(1),
+            ]);
+
+            doc.autoTable({
+              head: [["Semester", "Credits", "GPA", "Points"]],
+              body: semesterData,
+              startY: startY,
+              theme: "grid",
+              styles: {
+                textColor: [50, 50, 50],
+                fontSize: 10,
+              },
+              headStyles: {
+                fillColor: [40, 40, 40],
+                textColor: [255, 215, 0],
+              },
+            });
+
+            startY = doc.lastAutoTable.finalY + 10;
+          }
+
+          // Add CGPA
           doc.setFontSize(14);
           doc.setTextColor(255, 215, 0);
           doc.text(
-            `Total GPA: ${this.calculateGPA()}`,
+            `Cumulative GPA (CGPA): ${this.calculateCGPA()}`,
             15,
-            doc.lastAutoTable.finalY + 15
+            startY + 5
           );
 
           // Save PDF
@@ -492,24 +735,47 @@
         }
 
         render() {
+          // Render current courses
           const tbody = document.getElementById("courseList");
           tbody.innerHTML = "";
 
           this.courses.forEach((course, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                        <td>${course.courseName}</td>
-                        <td>${course.creditHours}</td>
-                        <td>${course.grade.toFixed(1)}</td>
-                        <td>
-                            <button class="action-button" onclick="gpacalculator.editCourse(${index})">✏️ Edit</button>
-                            <button class="action-button" onclick="gpacalculator.removeCourse(${index})">🗑️ Remove</button>
-                        </td>
-                    `;
+              <td>${course.courseName}</td>
+              <td>${course.creditHours}</td>
+              <td>${course.grade.toFixed(1)}</td>
+              <td>
+                <button class="action-button" onclick="gpacalculator.editCourse(${index})">✏️ Edit</button>
+                <button class="action-button" onclick="gpacalculator.removeCourse(${index})">🗑️ Remove</button>
+              </td>
+            `;
             tbody.appendChild(row);
           });
 
-          document.getElementById("gpaValue").textContent = this.calculateGPA();
+          // Render previous semesters
+          const semestersList = document.getElementById("previousSemestersList");
+          semestersList.innerHTML = "";
+
+          this.previousSemesters.forEach((semester, index) => {
+            const semesterDiv = document.createElement("div");
+            semesterDiv.className = "previous-semester";
+            semesterDiv.innerHTML = `
+              <div class="semester-info">
+                <strong>${semester.semesterName}</strong><br>
+                Credits: ${semester.semesterCredits} | GPA: ${semester.semesterGPA.toFixed(2)}
+              </div>
+              <div class="semester-actions">
+                <button class="action-button" onclick="gpacalculator.editSemester(${index})">✏️ Edit</button>
+                <button class="action-button" onclick="gpacalculator.removeSemester(${index})">🗑️ Remove</button>
+              </div>
+            `;
+            semestersList.appendChild(semesterDiv);
+          });
+
+          // Update GPA displays
+          document.getElementById("gpaValue").textContent = this.calculateCurrentGPA();
+          document.getElementById("cgpaValue").textContent = this.calculateCGPA();
         }
 
         editCourse(index) {
@@ -519,11 +785,29 @@
           document.getElementById("grade").value = course.grade;
           this.currentEditIndex = index;
           document.getElementById("addCourses").textContent = "Update Course";
+          this.switchTab('current');
+        }
+
+        editSemester(index) {
+          const semester = this.previousSemesters[index];
+          document.getElementById("semesterName").value = semester.semesterName;
+          document.getElementById("semesterGPA").value = semester.semesterGPA;
+          document.getElementById("semesterCredits").value = semester.semesterCredits;
+          this.currentEditSemesterIndex = index;
+          document.getElementById("addSemester").textContent = "Update Semester";
+          this.switchTab('previous');
         }
 
         resetForm() {
           document.getElementById("courseForm").reset();
           document.getElementById("addCourses").textContent = "Add Course";
+          this.currentEditIndex = -1;
+        }
+
+        resetSemesterForm() {
+          document.getElementById("previousSemesterForm").reset();
+          document.getElementById("addSemester").textContent = "Add Semester";
+          this.currentEditSemesterIndex = -1;
         }
       }
 
